@@ -86,7 +86,14 @@
       <button>Trigger a Global Error</button>
     </section>
   </main>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "6b0e205de4e34ae0adb0bc0f09024825"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                        
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
@@ -95,13 +102,90 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (error) {
+        console.error(error);
+        output.innerHTML = 'Inputs are not valid';
+      } finally {
+        console.log('Calculator finished :D');
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    class CustomError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = 'CustomError';
+      }
+    }
+
+    errorBtns.forEach(button => {
+      button.addEventListener('click', () => {
+        let data = {
+          name: 'Andrew',
+          age: 21,
+          city: 'San Diego'
+        };
+        try {
+          switch (button.innerText) {
+            case 'Console Log':
+              console.log(data);
+              break;
+            case 'Console Error':
+              console.error(data);
+              break;
+            case 'Console Count':
+              console.count('Counter');
+              break;
+            case 'Console Warn':
+              console.warn(data);
+              break;
+            case 'Console Assert':
+              console.assert(false, 'Assertion failed');
+              break;
+            case 'Console Clear':
+              console.clear();
+              break;
+            case 'Console Dir':
+              console.dir(data);
+              break;
+            case 'Console dirxml':
+              console.dirxml(data);
+              break;
+            case 'Console Group Start':
+              console.group('Group');
+              console.log('Inside group');
+              break;
+            case 'Console Group End':
+              console.log('Outside group');
+              console.groupEnd();
+              break;
+            case 'Console Table':
+              console.table([data]);
+              break;
+            case 'Start Timer':
+              console.time('Timer');
+              break;
+            case 'End Timer':
+              console.timeEnd('Timer');
+              break;
+            case 'Console Trace':
+              console.trace();
+              break;
+            case 'Trigger a Global Error':
+              throw new CustomError('A custom error occurred');
+              break;
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    });
   </script>
 </body>
 
